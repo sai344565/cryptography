@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to generate the multiple alphabets based on the key
+void generateAlphabets(char key[], char alphabets[][26]) {
+    int len = strlen(key);
+    for(int i = 0; i < len; i++) {
+        for(int j = 0; j < 26; j++) {
+            int shift = (int)key[i] - 97;
+            alphabets[i][j] = (char)((j + shift) % 26 + 97);
+        }
+    }
+}
+
+// Function to encrypt the plaintext using the generated alphabets
+void encrypt(char plaintext[], char key[]) {
+    int len = strlen(plaintext);
+    char alphabets[26][26];
+    generateAlphabets(key, alphabets);
+    for(int i = 0; i < len; i++) {
+        int index = i % strlen(key);
+        int shift = (int)key[index] - 97;
+        int j = (int)plaintext[i] - 97;
+        printf("%c", alphabets[index][j]);
+    }
+}
+
+int main() {
+    char plaintext[100], key[100];
+    printf("Enter the plaintext message: ");
+    fgets(plaintext, 100, stdin);
+    printf("Enter the key: ");
+    fgets(key, 100, stdin);
+    encrypt(plaintext, key);
+    return 0;
+}
