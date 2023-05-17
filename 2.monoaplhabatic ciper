@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+#define ALPHABET_SIZE 26
+
+char encrypt(char c, char* key);
+char decrypt(char c, char* key);
+
+int main() {
+    char key[ALPHABET_SIZE + 1];
+    char plaintext[100], ciphertext[100], decrypted[100];
+    int i;
+
+    // Read the key from user input
+    printf("Enter the substitution key: ");
+    fgets(key, ALPHABET_SIZE + 1, stdin);
+    key[strcspn(key, "\n")] = '\0';
+
+    // Check that the key contains all letters of the alphabet
+    for (i = 0; i < ALPHABET_SIZE; i++) {
+        if (!strchr(key, 'a' + i) && !strchr(key, 'A' + i)) {
+            printf("Invalid key: missing letter %c\n", 'a' + i);
+            return 1;
+        }
+    }
+
+    // Read the plaintext from user input
+    printf("Enter the plaintext: ");
+    fgets(plaintext, 100, stdin);
+    plaintext[strcspn(plaintext, "\n")] = '\0';
+
+    // Encrypt the plaintext
+    for (i = 0; plaintext[i] != '\0'; i++) {
+        if (isalpha(plaintext[i])) {
+            ciphertext[i] = encrypt(plaintext[i], key);
+        } else {
+            ciphertext[i] = plaintext[i];
+        }
+    }
+    ciphertext[i] = '\0';
+
+    printf("Ciphertext: %s\n", ciphertext);
+
+    // Decrypt the ciphertext
+    for (i = 0; ciphertext[i] != '\0'; i++) {
+        if (isalpha(ciphertext[i])) {
+            decrypted[i] = decrypt(ciphertext[i], key);
+        } else {
+            decrypted[i] = ciphertext[i];
+        }
+    }
+    decrypted[i] = '\0';
+
+    printf("Decrypted: %s\n", decrypted);
+
+    return 0;
+}
+
+char encrypt(char c, char* key) {
+    if (islower(c)) {
+        return tolower(key[c - 'a']);
+    } else {
+        return toupper(key[c - 'A']);
+    }
+}
+
+char decrypt(char c, char* key) {
+    int i;
+    if (islower(c)) {
+        i = strchr(key, tolower(c)) - key;
+        return 'a' + i;
+    } else {
+        i = strchr(key, toupper(c)) - key;
+        return 'A' + i;
+    }
+}
