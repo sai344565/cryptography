@@ -1,0 +1,61 @@
+#include <stdio.h>
+
+int main() {
+    char cipher_text[] = "XJXWJEXFWJXKXBJX";
+    int freq[26] = {0};
+    int i, j, k, a, b, max_freq, second_max_freq, max_index, second_max_index, x, y, inverse, decrypted_char;
+    int n = sizeof(cipher_text)/sizeof(cipher_text[0]);
+    
+    // count the frequency of each letter in the ciphertext
+    for (i = 0; i < n; i++) {
+        if (cipher_text[i] >= 'A' && cipher_text[i] <= 'Z') {
+            freq[cipher_text[i] - 'A']++;
+        }
+    }
+    max_freq = 0;
+    second_max_freq = 0;
+    for (i = 0; i < 26; i++) {
+        if (freq[i] > max_freq) {
+            second_max_freq = max_freq;
+            second_max_index = max_index;
+            max_freq = freq[i];
+            max_index = i;
+        }
+        else if (freq[i] > second_max_freq) {
+            second_max_freq = freq[i];
+            second_max_index = i;
+        }
+    }
+    
+    y = max_index;
+    x = ('E' - 'A');
+    printf("enter the inverse number:");
+    scanf("%d",&inverse);
+    
+    for (i = 0; i < 26; i++) {
+        if ((i * x) % 26 == 1) {
+            inverse = i;
+            break;
+        }
+    }
+    if (inverse == -1) {
+        printf("Error: Inverse not found.\n");
+        return 1;
+    }
+    a = (inverse * (y - x + 26)) % 26;
+    b = (inverse * (('B' - 'A') - a * ('U' - 'A') + 26)) % 26;
+    printf("Key parameters: a=%d, b=%d\n", a, b);
+    printf("Plaintext: ");
+    for (i = 0; i < n; i++) {
+        if (cipher_text[i] >= 'A' && cipher_text[i] <= 'Z') {
+            decrypted_char = (inverse * (cipher_text[i] - 'A' - b + 26)) % 26;
+            printf("%c", decrypted_char + 'A');
+        }
+        else {
+            printf("%c", cipher_text[i]);
+        }
+    }
+    printf("\n");
+    
+    return 0;
+}
